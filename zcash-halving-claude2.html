@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #111111; /* Changed to darker gray */
+      background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%); /* Adjusted gradient */
+      color: #fff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow: hidden;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .container {
+      text-align: center;
+      padding: 2rem;
+      max-width: 900px;
+      position: relative;
+      z-index: 2;
+    }
+
+    h1 {
+      font-size: 4rem;
+      margin-bottom: 2rem;
+      position: relative;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+    }
+
+    .title-glow {
+      position: relative;
+      display: inline-block;
+      background: linear-gradient(90deg, #f7931a, #f0b90b, #f7931a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200% auto;
+      animation: shine 3s linear infinite;
+      text-shadow: 0 0 20px rgba(247, 147, 26, 0.5);
+    }
+
+    @keyframes shine {
+      to {
+        background-position: 200% center;
+      }
+    }
+
+    .countdown-wrapper {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 2rem;
+      padding: 3rem;
+      margin: 2rem 0;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transform: perspective(1000px) rotateX(5deg);
+      transition: transform 0.3s ease;
+    }
+
+    .countdown-wrapper:hover {
+      transform: perspective(1000px) rotateX(0deg) scale(1.02);
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .countdown-item {
+      background: rgba(247, 147, 26, 0.1);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .countdown-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transform: translateX(-100%);
+      animation: shine-effect 3s infinite;
+    }
+
+    @keyframes shine-effect {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    .countdown-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #f7931a;
+      text-shadow: 0 0 10px rgba(247, 147, 26, 0.5);
+    }
+
+    .countdown-label {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #cecece;
+    }
+
+    .info-text {
+      font-size: 1.2rem;
+      margin: 1rem 0;
+      color: #cecece;
+      position: relative;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .block-number {
+      color: #f7931a;
+      font-weight: bold;
+      font-size: 1.4rem;
+      text-shadow: 0 0 10px rgba(247, 147, 26, 0.3);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f7931a, #f0b90b);
+      width: 0%;
+      animation: progress-animation 2s ease-out forwards;
+      box-shadow: 0 0 10px rgba(247, 147, 26, 0.5);
+    }
+
+    @keyframes progress-animation {
+      from { width: 0%; }
+      to { width: var(--progress-width); }
+    }
+
+    .pyro {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .pyro > .before, .pyro > .after {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      box-shadow: 0 0 #fff;
+      animation: 1s bang ease-out infinite backwards,
+                1s gravity ease-in infinite backwards,
+                5s position linear infinite backwards;
+    }
+
+    .pyro > .after {
+      animation-delay: 1.25s, 1.25s, 1.25s;
+      animation-duration: 1.25s, 1.25s, 6.25s;
+    }
+
+    @keyframes bang {
+      to {
+        box-shadow: -70px -115.67px #00ff73,
+                    -28px -99.67px #ff006a,
+                    58px -31.67px #ff006f,
+                    13px -39.67px #00ff3c,
+                    -19px -118.67px #00fff2,
+                    -28px -83.67px #a6ff00,
+                    24px -108.67px #95ff00,
+                    -37px -144.67px #ff00c4,
+                    -39px -84.67px #00ffcc,
+                    -134px -59.67px #00ff73,
+                    -28px -99.67px #ff006a,
+                    58px -31.67px #ff006f,
+                    13px -39.67px #00ff3c,
+                    -19px -118.67px #00fff2;
+      }
+    }
+
+    @keyframes gravity {
+      to {
+        transform: translateY(200px);
+        opacity: 0;
+      }
+    }
+
+    @keyframes position {
+      0%, 19.9% {
+        margin-top: 10%;
+        margin-left: 40%;
+      }
+      20%, 39.9% {
+        margin-top: 40%;
+        margin-left: 30%;
+      }
+      40%, 59.9% {
+        margin-top: 20%;
+        margin-left: 70%;
+      }
+      60%, 79.9% {
+        margin-top: 30%;
+        margin-left: 20%;
+      }
+      80%, 99.9% {
+        margin-top: 30%;
+        margin-left: 80%;
+      }
+    }
+
+    .floating {
+      animation: floating 3s ease-in-out infinite;
+    }
+
+    @keyframes floating {
+      0% { transform: translate(0, 0px); }
+      50% { transform: translate(0, 15px); }
+      100% { transform: translate(0, 0px); }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+  
+  <div class="pyro">
+    <div class="before"></div>
+    <div class="after"></div>
+  </div>
+
+  <div class="container">
+    <h1><span class="title-glow">Zcash Halving NU6</span></h1>
+    
+    <div class="countdown-wrapper floating">
+      <div class="countdown-grid">
+        <div class="countdown-item">
+          <div id="days" class="countdown-number">00</div>
+          <div class="countdown-label">Days</div>
+        </div>
+        <div class="countdown-item">
+          <div id="hours" class="countdown-number">00</div>
+          <div class="countdown-label">Hours</div>
+        </div>
+        <div class="countdown-item">
+          <div id="minutes" class="countdown-number">00</div>
+          <div class="countdown-label">Minutes</div>
+        </div>
+        <div class="countdown-item">
+          <div id="seconds" class="countdown-number">00</div>
+          <div class="countdown-label">Seconds</div>
+        </div>
+      </div>
+      
+      <div class="info-text">
+        Activation block <span class="block-number" id="blockNumber">2726400</span>
+      </div>
+      
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      
+      <div class="info-text">
+        Estimated activation: <span id="activationDate"></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize particles.js
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: '#f7931a' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.5, random: true },
+        size: { value: 3, random: true },
+        line_linked: {
+          enable: true,
+          distance: 150,
+          color: '#f7931a',
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 2,
+          direction: 'none',
+          random: true,
+          straight: false,
+          out_mode: 'out',
+          bounce: false,
+        }
+      },
+      interactivity: {
+        detect_on: 'canvas',
+        events: {
+          onhover: { enable: true, mode: 'repulse' },
+          onclick: { enable: true, mode: 'push' },
+          resize: true
+        }
+      },
+      retina_detect: true
+    });
+
+    function updateCountdown() {
+      const blockNumber = 2726400; // Updated block height
+      const blockTime = 150; // seconds
+      const currentBlock = Math.floor(Date.now() / 1000 / blockTime);
+      const blocksRemaining = blockNumber - currentBlock;
+      const secondsRemaining = blocksRemaining * blockTime;
+      
+      const days = Math.floor(secondsRemaining / (24 * 60 * 60));
+      const hours = Math.floor((secondsRemaining % (24 * 60 * 60)) / (60 * 60));
+      const minutes = Math.floor((secondsRemaining % (60 * 60)) / 60);
+      const seconds = Math.floor(secondsRemaining % 60);
+      
+      document.getElementById('days').textContent = String(days).padStart(2, '0');
+      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+      
+      const activationDate = new Date(Date.now() + (secondsRemaining * 1000));
+      document.getElementById('activationDate').textContent = 
+        activationDate.toLocaleString();
+
+      // Update progress bar
+      const totalBlocks = 2726400 - 2700000; // Updated for new block height
+      const remainingBlocks = 2726400 - currentBlock;
+      const progress = ((totalBlocks - remainingBlocks) / totalBlocks) * 100;
+      document.querySelector('.progress-fill').style.setProperty('--progress-width', `${progress}%`);
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+</body>
+</html>
